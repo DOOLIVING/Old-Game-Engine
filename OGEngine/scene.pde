@@ -3,6 +3,7 @@ class Scene {
   ArrayList<cube> worldCubes = new ArrayList<cube>();
   ArrayList<sphere> worldSphere = new ArrayList<sphere>();
   ArrayList<light> worldLight = new ArrayList<light>();
+  ArrayList<sound> worldSound = new ArrayList<sound>();
   
   int bgColor = 255;
 

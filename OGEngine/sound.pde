@@ -1,7 +1,4 @@
 import processing.sound.*;
-
-ArrayList<sound> worldSound = new ArrayList<sound>();
-
 public class sound {
   String address;
   float volume;

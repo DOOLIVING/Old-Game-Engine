@@ -1,4 +1,3 @@
-ArrayList<button> worldButton = new ArrayList<button>();
 public class button {
   float x, y;
   float sizeX, sizeY;

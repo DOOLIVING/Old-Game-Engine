@@ -1,10 +1,10 @@
 import processing.sound.*;
-Scene currentScene;
 PApplet app;
+Scene currentScene;
 
 public void setup() {
-  app = this;
   size(1200, 650, P3D); 
+  app = this;
   pixelDensity(1); 
   sceneCamera = new Camera();
   sphereDetail(18); 
@@ -19,8 +19,8 @@ public void draw() {
   setigsDefault();
   if (currentScene == null) return;
 
-  for (button b : worldButton) {
-   b.pres(); 
+  for (button b : currentScene.worldButton) { 
+    b.pres(); 
   }
 
   pushMatrix();
@@ -48,7 +48,7 @@ public void draw() {
   noLights();
   camera();   
   
-  for (button b : worldButton) {
+  for (button b : currentScene.worldButton) {
     b.display();
   }
   
