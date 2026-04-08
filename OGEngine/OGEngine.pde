@@ -12,19 +12,29 @@ public void setup() {
 }
 
 public void draw() {
-  background(255);
+  if (currentScene == null) return;
+  currentScene.display(); 
 
   keyboard();
-  //script();
+  mouse();
   setigsDefault();
-  if (currentScene == null) return;
 
   for (button b : currentScene.worldButton) { 
     b.pres(); 
   }
 
   pushMatrix();
+  for (ParticleSystem ps : currentScene.worldParticles) {
+    ps.update();
+    ps.display();
+  }
+
   sceneCamera.apply(); 
+
+  for (model m : currentScene.worldModels) {
+    m.display();
+  }
+  
 
   int lightCount = 0;
   for (light lg : worldLight) {
@@ -43,7 +53,6 @@ public void draw() {
   popMatrix(); 
 
   hint(DISABLE_DEPTH_TEST); 
-  
   pushStyle(); 
   noLights();
   camera();   
@@ -51,10 +60,13 @@ public void draw() {
   for (button b : currentScene.worldButton) {
     b.display();
   }
+
+  for (texts t : currentScene.worldTexts) {
+    t.display();
+  }
   
   popStyle(); 
   hint(ENABLE_DEPTH_TEST); 
   
   currentScene.update();  
-  currentScene.display();
 }

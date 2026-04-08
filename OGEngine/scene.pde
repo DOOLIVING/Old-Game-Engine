@@ -1,15 +1,21 @@
-class Scene {
+public class Scene {
   ArrayList<button> worldButton = new ArrayList<button>();
   ArrayList<cube> worldCubes = new ArrayList<cube>();
   ArrayList<sphere> worldSphere = new ArrayList<sphere>();
   ArrayList<light> worldLight = new ArrayList<light>();
   ArrayList<sound> worldSound = new ArrayList<sound>();
+  ArrayList<texts> worldTexts = new ArrayList<texts>();
+  ArrayList<model> worldModels = new ArrayList<model>();
+  ArrayList<ParticleSystem> worldParticles = new ArrayList<ParticleSystem>();
   
   int bgColor = 255;
 
   Scene() {}
 
   void update() {
+    for (int i = worldParticles.size() - 1; i >= 0; i--) {
+      worldParticles.get(i).update();
+    }
 
     for (button b : worldButton) {
 
@@ -33,6 +39,11 @@ class Scene {
     
     for (cube c : worldCubes) c.display();
     for (sphere s : worldSphere) s.display();
+ 
+    for (ParticleSystem ps : worldParticles) {
+      ps.display();
+    }
+    
     popMatrix();
 
     hint(DISABLE_DEPTH_TEST);

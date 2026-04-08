@@ -17,7 +17,7 @@ public class button {
     this.label = label;
   }
 
-  void pres() {
+  private void pres() {
     clickedTrigger = false; 
     
     if (mousePressed) {
@@ -33,7 +33,7 @@ public class button {
     }
   }
 
-  void display() {
+  private void display() {
     if (isPressed) {
       fill(r - 50, g - 50, b - 50);
     } else {
@@ -50,5 +50,51 @@ public class button {
 
   boolean isClicked() {
     return clickedTrigger;
+  }
+}
+
+public class texts {
+  float x, y;
+  int r, g, b;
+  String label;
+  int textSize;
+
+  texts(float x, float y, int r, int g, int b, String label, int textSize) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.label = label;
+    this.textSize = textSize;
+  }
+
+  texts(float x, float y, String label, int textSize) {
+    this.x = x;
+    this.y = y;
+    this.r = 255;
+    this.g = 255;
+    this.b = 255;
+    this.label = label;
+    this.textSize = textSize;
+  }
+  
+  private void display() {
+    pushStyle();
+    fill(r, g, b);
+    textAlign(CENTER, CENTER);
+    textSize(textSize);
+    text(label, x, y);
+    popStyle();
+  }
+
+  private void setText(String newLabel) {
+    this.label = newLabel;
+  }
+
+  private void setColor(int r, int g, int b) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
   }
 }
