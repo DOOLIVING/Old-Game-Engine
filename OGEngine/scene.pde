@@ -9,21 +9,48 @@ public class Scene {
   ArrayList<ParticleSystem> worldParticles = new ArrayList<ParticleSystem>();
   
   int bgColor = 255;
+  PShader sceneShader; 
 
   Scene() {}
+
+  void setShader(String path) {
+    this.sceneShader = loadShader(path);
+  }
 
   void update() {
     for (int i = worldParticles.size() - 1; i >= 0; i--) {
       worldParticles.get(i).update();
     }
 
-    for (button b : worldButton) {
+    for (cube c : worldCubes) {
+      if (c.physics) {
+        c.updatePhysics();
 
+        for (cube other : worldCubes) {
+          if (c != other && checkCollision(c, other)) {
+            c.y -= c.pb.velocity.y;
+            c.pb.velocity.y *= -0.2; 
+          }
+        }
+      }
+    }
+
+    for (model m : worldModels) {
+      if (m.physics) {
+        m.update();
+      }
+    }
+
+    for (button b : worldButton) {
     }
   }
 
   void display() {
     background(bgColor);
+
+    if (sceneShader != null) {
+      shader(sceneShader);
+    }
 
     pushMatrix();
     sceneCamera.apply(); 
@@ -43,14 +70,19 @@ public class Scene {
     for (ParticleSystem ps : worldParticles) {
       ps.display();
     }
+
+    for (model m : worldModels) {
+      m.display();
+    }
     
     popMatrix();
+
+    resetShader(); 
 
     hint(DISABLE_DEPTH_TEST);
     pushStyle();
     noLights();
-    camera(); 
-    
+    camera();
     for (button b : worldButton) {
       b.display();
     }
