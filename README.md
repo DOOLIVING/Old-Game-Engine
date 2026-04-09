@@ -1,10 +1,10 @@
-# 🕹️ Old Game Engine (OGEngine)
+# 🕹️ VertexEngin
 
 [![Processing](https://img.shields.io/badge/Made%20with-Processing-006699.svg)](https://processing.org)
 [![Version](https://img.shields.io/badge/version-v2.1--stable-green.svg)](https://github.com/your-repo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Old Game Engine** — это легковесный 3D-движок на Java (Processing), вдохновленный эстетикой начала 2000-х. Теперь это не просто графическая оболочка, а функциональная среда с поддержкой шейдеров и физического взаимодействия.
+**VertexEngine** — это легковесный 3D-движок на Java (Processing), вдохновленный эстетикой начала 2000-х. Теперь это не просто графическая оболочка, а функциональная среда с поддержкой шейдеров и физического взаимодействия.
 
 ---
 
