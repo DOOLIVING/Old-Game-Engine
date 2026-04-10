@@ -1,7 +1,7 @@
-# 🕹️ VertexEngin
+# 🕹️ VertexEngine
 
 [![Processing](https://img.shields.io/badge/Made%20with-Processing-006699.svg)](https://processing.org)
-[![Version](https://img.shields.io/badge/version-v2.1--stable-green.svg)](https://github.com/your-repo)
+[![Version](https://img.shields.io/badge/version-v2.1.1--stable-green.svg)](https://github.com/your-repo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **VertexEngine** — это легковесный 3D-движок на Java (Processing), вдохновленный эстетикой начала 2000-х. Теперь это не просто графическая оболочка, а функциональная среда с поддержкой шейдеров и физического взаимодействия.
@@ -9,6 +9,9 @@
 ---
 
 ## 🚀 Новое в версии 2.1 (Апрель 2026)
+
+### 🖥️ Прототип интерфейса
+Добавлен прототип пользовательского интерфейса.
 
 ### ⚡ Шейдерная архитектура (GLSL)
 Движок теперь поддерживает кастомные конвейеры отрисовки через `PShader`.
@@ -81,9 +84,7 @@ shader(pixelated); // Применить ко всей сцене
 ---
 
 ## 📜 Лицензия
-**MIT License**. Используйте OGEngine для своих инди-проектов, обучения или экспериментов!
+**MIT License**. Используйте VertexEngine для своих инди-проектов, обучения или экспериментов!
 
 ---
 *Развиваем идеи классического геймдева. 2026.*
-
----
