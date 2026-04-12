@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vertex Editor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        
+        :root {
+            --unity-bg: #2d2d30;
+            --unity-panel: #252526;
+            --unity-hover: #3e3e42;
+            --unity-selected: #007acc;
+            --unity-text: #cccccc;
+        }
+        
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .toolbar {
+            background: var(--unity-panel);
+            padding: 5px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #1e1e1e;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            background: var(--unity-bg);
+            border: none;
+            color: var(--unity-text);
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .tool-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        
+        .tool-btn:hover {
+            background: var(--unity-hover);
+        }
+        
+        .tool-btn.active {
+            background: var(--unity-selected);
+        }
+        
+        .tool-btn.export {
+            background: #0a5e0a;
+        }
+        
+        .tool-btn.export:hover {
+            background: #0c7a0c;
+        }
+        
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .hierarchy {
+            width: 250px;
+            background: var(--unity-panel);
+            border-right: 1px solid #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hierarchy-header {
+            padding: 10px;
+            background: var(--unity-bg);
+            border-bottom: 1px solid #1e1e1e;
+            font-weight: bold;
+            color: var(--unity-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .hierarchy-header svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--unity-text);
+        }
+        
+        .hierarchy-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .hierarchy-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            color: var(--unity-text);
+            border-bottom: 1px solid #1e1e1e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .hierarchy-item svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        
+        .hierarchy-item:hover {
+            background: var(--unity-hover);
+        }
+        
+        .hierarchy-item.selected {
+            background: var(--unity-selected);
+        }
+        
+        .viewport {
+            flex: 1;
+            position: relative;
+            background: #1a1a1a;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .inspector {
+            width: 340px;
+            background: var(--unity-panel);
+            border-left: 1px solid #1e1e1e;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .inspector-section {
+            padding: 10px;
+            border-bottom: 1px solid #1e1e1e;
+        }
+        
+        .inspector-label {
+            color: var(--unity-text);
+            font-size: 12px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .inspector-label svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--unity-text);
+        }
+        
+        .inspector-input {
+            width: 100%;
+            padding: 5px;
+            background: var(--unity-bg);
+            border: 1px solid #3e3e42;
+            color: var(--unity-text);
+            border-radius: 3px;
+        }
+        
+        .inspector-input-group {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .checkbox-label {
+            color: var(--unity-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        
+        select {
+            background: var(--unity-bg);
+            color: var(--unity-text);
+            border: 1px solid #3e3e42;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--unity-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--unity-hover);
+        }
+        
+        .export-preview {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e1e1e;
+            border: 1px solid #007acc;
+            border-radius: 5px;
+            padding: 15px;
+            max-width: 600px;
+            max-height: 500px;
+            overflow: auto;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .export-preview pre {
+            color: #0f0;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .close-preview {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .texture-preview {
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        .texture-preview img {
+            max-width: 100%;
+            max-height: 80px;
+            border-radius: 5px;
+            border: 1px solid #3e3e42;
+        }
+        
+        .separator {
+            width: 2px;
+            background: #1e1e1e;
+            margin: 0 10px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="toolbar">
+            <button class="tool-btn" id="btn-move">
+                <svg viewBox="0 0 24 24"><path d="M13 6v5h5V7h-3V4h-2m-2 2h-2v3H6v2h3v5h2v-5h5v-2h-5V8z"/></svg>
+                Move
+            </button>
+            <button class="tool-btn" id="btn-rotate">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>
+                Rotate
+            </button>
+            <button class="tool-btn" id="btn-scale">
+                <svg viewBox="0 0 24 24"><path d="M14 4v2h3.59L4 18.59V15H2v6h6v-2H4.41L18 5.41V9h2V4h-6z"/></svg>
+                Scale
+            </button>
+            <div class="separator"></div>
+            <button class="tool-btn" id="btn-cube">
+                <svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44c-.32-.17-.53-.5-.53-.88v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 3.15L5 7.09v7.82l7 3.94 7-3.94V7.09l-7-3.94z"/></svg>
+                Cube
+            </button>
+            <button class="tool-btn" id="btn-sphere">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>
+                Sphere
+            </button>
+            <button class="tool-btn" id="btn-light">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/></svg>
+                Light
+            </button>
+            <div class="separator"></div>
+            <button class="tool-btn" id="btn-delete">
+                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                Delete
+            </button>
+            <button class="tool-btn" id="btn-duplicate">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                Duplicate
+            </button>
+            <div class="separator"></div>
+            <button class="tool-btn" id="btn-import-obj">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Import OBJ
+            </button>
+            <div class="separator"></div>
+            <button class="tool-btn" id="btn-save">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                Save
+            </button>
+            <button class="tool-btn" id="btn-load">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM17 9h-4V7h-2v2H7v2h4v2h2v-2h4z"/></svg>
+                Load
+            </button>
+            <button class="tool-btn" id="btn-new">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                New Scene
+            </button>
+            <div class="separator"></div>
+            <button class="tool-btn export" id="btn-export">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Export to Game
+            </button>
+            <div class="separator"></div>
+            <select id="scene-selector" style="background: #2d2d30; color: white; border: 1px solid #3e3e42; padding: 5px; border-radius: 3px;"></select>
+            <button class="tool-btn" id="btn-add-scene">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Scene
+            </button>
+            <button class="tool-btn" id="btn-delete-scene">
+                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                Delete
+            </button>
+            <button class="tool-btn" id="btn-rename-scene">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                Rename
+            </button>
+        </div>
+        
+        <div class="main">
+            <div class="hierarchy">
+                <div class="hierarchy-header">
+                    <svg viewBox="0 0 24 24"><path d="M3 5h2v14H3zm4 0h2v14H7zm4 0h2v14h-2zm4 0h2v14h-2z"/></svg>
+                    Hierarchy
+                </div>
+                <div class="hierarchy-list" id="hierarchy-list"></div>
+            </div>
+            
+            <div class="viewport">
+                <canvas id="editor-canvas"></canvas>
+            </div>
+            
+            <div class="inspector" id="inspector">
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M3 5h2v14H3zm4 0h2v14H7zm4 0h2v14h-2z"/></svg>
+                        Name
+                    </div>
+                    <input type="text" id="obj-name" class="inspector-input">
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M13 6v5h5V7h-3V4h-2m-2 2h-2v3H6v2h3v5h2v-5h5v-2h-5V8z"/></svg>
+                        Position
+                    </div>
+                    <div class="inspector-input-group">
+                        <input type="number" id="pos-x" placeholder="X" class="inspector-input" step="0.1">
+                        <input type="number" id="pos-y" placeholder="Y" class="inspector-input" step="0.1">
+                        <input type="number" id="pos-z" placeholder="Z" class="inspector-input" step="0.1">
+                    </div>
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>
+                        Rotation
+                    </div>
+                    <div class="inspector-input-group">
+                        <input type="number" id="rot-x" placeholder="X" class="inspector-input" step="1">
+                        <input type="number" id="rot-y" placeholder="Y" class="inspector-input" step="1">
+                        <input type="number" id="rot-z" placeholder="Z" class="inspector-input" step="1">
+                    </div>
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M14 4v2h3.59L4 18.59V15H2v6h6v-2H4.41L18 5.41V9h2V4h-6z"/></svg>
+                        Scale
+                    </div>
+                    <div class="inspector-input-group">
+                        <input type="number" id="scl-x" placeholder="X" class="inspector-input" step="0.1">
+                        <input type="number" id="scl-y" placeholder="Y" class="inspector-input" step="0.1">
+                        <input type="number" id="scl-z" placeholder="Z" class="inspector-input" step="0.1">
+                    </div>
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/></svg>
+                        Color
+                    </div>
+                    <input type="color" id="obj-color" class="inspector-input">
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
+                        Texture
+                    </div>
+                    <input type="file" id="texture-upload" accept="image/jpeg,image/png,image/jpg,image/gif" style="display: none;">
+                    <div class="inspector-input-group">
+                        <button class="tool-btn" id="btn-load-texture" style="flex: 1;">Load Texture</button>
+                        <button class="tool-btn" id="btn-remove-texture" style="flex: 1;">Remove</button>
+                    </div>
+                    <div id="texture-preview" class="texture-preview" style="display: none;">
+                        <img id="texture-preview-img" src="">
+                    </div>
+                </div>
+                <div class="inspector-section">
+                    <div class="inspector-label">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>
+                        Camera Position
+                    </div>
+                    <div class="inspector-input-group">
+                        <input type="number" id="cam-x" placeholder="Cam X" class="inspector-input" step="1">
+                        <input type="number" id="cam-y" placeholder="Cam Y" class="inspector-input" step="1">
+                        <input type="number" id="cam-z" placeholder="Cam Z" class="inspector-input" step="1">
+                    </div>
+                    <div class="inspector-input-group" style="margin-top: 5px;">
+                        <input type="number" id="cam-yaw" placeholder="Yaw (degrees)" class="inspector-input" step="5">
+                        <input type="number" id="cam-pitch" placeholder="Pitch (degrees)" class="inspector-input" step="5">
+                    </div>
+                    <button class="tool-btn" id="btn-set-camera" style="margin-top: 5px; width: 48%;">Set Current</button>
+                    <button class="tool-btn" id="btn-goto-camera" style="margin-top: 5px; width: 48%; float: right;">Go to</button>
+                </div>
+                <div class="inspector-section">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="obj-physics"> Physics Enabled
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="export-preview" class="export-preview">
+        <span class="close-preview" id="close-preview">&times;</span>
+        <h4 style="color: white; margin-bottom: 10px;">Exported Code (copied to clipboard):</h4>
+        <pre id="export-code"></pre>
+    </div>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module" src="editor.js"></script>
+</body>
+</html>

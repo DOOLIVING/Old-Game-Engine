@@ -2,6 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.128.0/build/three.module.js';
 
 export const gravityForce = 0.5;
 export const friction = 0.95;
+export const airResistance = 0.98;
 export const floorY = 0;
 
 export class PhysicsBody {
@@ -18,8 +19,12 @@ export class PhysicsBody {
     applyFriction() {
         this.velocity.x *= friction;
         this.velocity.z *= friction;
+        this.velocity.x *= airResistance;
+        this.velocity.y *= airResistance;
+        this.velocity.z *= airResistance;
         if (Math.abs(this.velocity.x) < 0.01) this.velocity.x = 0;
         if (Math.abs(this.velocity.z) < 0.01) this.velocity.z = 0;
+        if (Math.abs(this.velocity.y) < 0.01) this.velocity.y = 0;
     }
 }
 
@@ -56,5 +61,5 @@ export function resolveCollision(dynamic, staticObj) {
         }
         return true;
     }
-    return false;
+    return false; 
 }
