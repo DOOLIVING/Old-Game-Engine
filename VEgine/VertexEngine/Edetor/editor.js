@@ -11,8 +11,8 @@ let sceneManager, uiManager, exportManager, objectFactory;
 function init() {
     sceneManager = new SceneManager();
     objectFactory = new ObjectFactory(sceneManager);
-    uiManager = new UIManager(sceneManager, objectFactory);
     exportManager = new ExportManager(sceneManager);
+    uiManager = new UIManager(sceneManager, objectFactory, exportManager);
     
     uiManager.setupEventHandlers();
     sceneManager.animate();
