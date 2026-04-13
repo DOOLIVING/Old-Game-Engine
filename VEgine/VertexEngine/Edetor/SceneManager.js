@@ -35,8 +35,7 @@ export class SceneManager {
         this.transformControls.addEventListener('dragging-changed', (e) => this.controls.enabled = !e.value);
         this.transformControls.addEventListener('objectChange', () => this.updateInspector());
         this.scene.add(this.transformControls);
-        
-        // Свет в редакторе
+
         this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
         const sun = new THREE.DirectionalLight(0xffffff, 1);
         sun.position.set(10, 20, 10);
