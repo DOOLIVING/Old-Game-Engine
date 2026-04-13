@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertex Launcher - Движок для создания игр</title>
+    <link rel="stylesheet" href="launcher.css">
+</head>
+<body>
+    <div class="launcher-container">
+        <!-- Верхняя панель -->
+        <div class="launcher-header">
+            <div class="logo">
+                <span class="logo-icon">🎮</span>
+                <span class="logo-text">VERTEX <span class="logo-highlight">ENGINE</span></span>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" id="settings-btn">⚙️ Настройки</button>
+                <button class="header-btn" id="docs-btn">📚 Документация</button>
+            </div>
+        </div>
+
+        <div class="launcher-main">
+            <!-- Левая колонка - Проекты -->
+            <div class="projects-section">
+                <div class="section-header">
+                    <h2>📁 Проекты</h2>
+                    <div class="header-buttons">
+                        <button class="btn-primary" id="new-project-btn">+ Создать проект</button>
+                        <button class="btn-secondary" id="open-project-btn">📂 Открыть проект</button>
+                    </div>
+                </div>
+
+                <!-- Список последних проектов -->
+                <div class="recent-projects">
+                    <h3>Недавние проекты</h3>
+                    <div class="projects-list" id="projects-list">
+                        <div class="empty-state">
+                            <p>Нет недавних проектов</p>
+                            <p class="empty-hint">Создайте новый проект или откройте существующий</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Шаблоны проектов -->
+                <div class="project-templates">
+                    <h3>Шаблоны</h3>
+                    <div class="templates-grid">
+                        <div class="template-card" data-template="empty">
+                            <div class="template-icon">📄</div>
+                            <div class="template-name">Пустой проект</div>
+                            <div class="template-desc">Базовая сцена с камерой и светом</div>
+                        </div>
+                        <div class="template-card" data-template="fps">
+                            <div class="template-icon">🎯</div>
+                            <div class="template-name">FPS Шутер</div>
+                            <div class="template-desc">Готовая настройка для шутера от первого лица</div>
+                        </div>
+                        <div class="template-card" data-template="platformer">
+                            <div class="template-icon">🏃</div>
+                            <div class="template-name">Платформер</div>
+                            <div class="template-desc">2.5D платформер с физикой</div>
+                        </div>
+                        <div class="template-card" data-template="rpg">
+                            <div class="template-icon">⚔️</div>
+                            <div class="template-name">RPG</div>
+                            <div class="template-desc">Ролевая игра с инвентарём</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая колонка - Новости и информация -->
+            <div class="news-section">
+                <div class="section-header">
+                    <h2>📰 Новости и обновления</h2>
+                </div>
+                
+                <div class="news-list" id="news-list">
+                    <div class="news-item">
+                        <div class="news-date">Сегодня</div>
+                        <div class="news-title">Vertex Engine v1.0.0</div>
+                        <div class="news-content">
+                            Первый релиз! Включает редактор сцен, систему блюпринтов и экспорт в игру.
+                        </div>
+                        <div class="news-tag">Обновление</div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">В разработке</div>
+                        <div class="news-title">Система анимаций</div>
+                        <div class="news-content">
+                            Скоро появится визуальный редактор анимаций и контроллер состояний.
+                        </div>
+                        <div class="news-tag">Анонс</div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">Планируется</div>
+                        <div class="news-title">Мультиплеер</div>
+                        <div class="news-content">
+                            Поддержка сетевой игры и выделенных серверов.
+                        </div>
+                        <div class="news-tag">Дорожная карта</div>
+                    </div>
+                </div>
+
+                <!-- Быстрые ссылки -->
+                <div class="quick-links">
+                    <h3>🔗 Быстрые ссылки</h3>
+                    <div class="links-list">
+                        <a href="#" class="quick-link" id="tutorials-link">📖 Видеоуроки</a>
+                        <a href="#" class="quick-link" id="forum-link">💬 Форум сообщества</a>
+                        <a href="#" class="quick-link" id="assets-link">🛒 Магазин ассетов</a>
+                        <a href="#" class="quick-link" id="github-link">🐙 GitHub</a>
+                    </div>
+                </div>
+
+                <!-- Версия -->
+                <div class="version-info">
+                    <span>Vertex Engine v1.0.0</span>
+                    <span>© 2024 Vertex Studio</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания проекта -->
+    <div id="new-project-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Создать новый проект</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Название проекта</label>
+                    <input type="text" id="project-name" placeholder="Мой первый проект" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Расположение</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="project-path" placeholder="Выберите папку для проекта" class="form-input" readonly>
+                        <button id="browse-path-btn" class="btn-secondary">Обзор...</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Шаблон</label>
+                    <select id="project-template" class="form-input">
+                        <option value="empty">Пустой проект</option>
+                        <option value="fps">FPS Шутер</option>
+                        <option value="platformer">Платформер</option>
+                        <option value="rpg">RPG</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-project-btn">Отмена</button>
+                <button class="btn-primary" id="confirm-create-btn">Создать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно настроек -->
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Настройки</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Путь к редактору</label>
+                    <input type="text" id="editor-path" placeholder="editor.html" class="form-input">
+                    <small>Относительный или абсолютный путь к файлу редактора</small>
+                </div>
+                <div class="form-group">
+                    <label>Авто-сохранение</label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="auto-save"> Включить авто-сохранение проектов
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Тема</label>
+                    <select id="theme-select" class="form-input">
+                        <option value="dark">Тёмная</option>
+                        <option value="light">Светлая (скоро)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="save-settings-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="launcher.js"></script>
+    <script>
+    // Получаем параметр project из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectParam = urlParams.get('project');
+    if (projectParam) {
+        localStorage.setItem('vertex_current_project', JSON.stringify({
+            path: projectParam,
+            name: projectParam
+        }));
+        console.log(`📁 Загружен проект: ${projectParam}`);
+    } else {
+        // Если нет параметра проекта, проверяем сохранённый
+        const saved = localStorage.getItem('vertex_current_project');
+        if (saved) {
+            console.log(`📁 Последний проект: ${JSON.parse(saved).name}`);
+        }
+    }
+</script>
+</body>
+</html>

@@ -546,5 +546,17 @@
         }
     </script>
     <script type="module" src="editor.js"></script>
+    <script>
+    // Получаем параметр project из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectParam = urlParams.get('project');
+    if (projectParam) {
+        localStorage.setItem('vertex_current_project', JSON.stringify({
+            path: projectParam,
+            name: projectParam
+        }));
+        console.log(`📁 Загружен проект: ${projectParam}`);
+    }
+</script>
 </body>
 </html>

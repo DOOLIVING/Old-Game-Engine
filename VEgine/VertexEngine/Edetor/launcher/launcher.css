@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-main: #141414;
+    --bg-side: #1c1c1c;
+    --bg-card: #252525;
+    --accent: #00a2ff;
+    --text-main: #e0e0e0;
+    --text-dim: #888;
+    --border: rgba(255, 255, 255, 0.05);
+    --radius: 8px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* Скроллбар */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 10px; }
+
+/* Общие стили кнопок и ссылок */
+button, .quick-link {
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* Header */
+.launcher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: var(--bg-side);
+    border-bottom: 1px solid var(--border);
+}
+
+.logo-text { font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
+.logo-highlight { 
+    color: var(--accent); 
+    background: rgba(0, 162, 255, 0.1); 
+    padding: 2px 6px; 
+    border-radius: 4px; 
+}
+
+.header-btn {
+    background: var(--bg-card);
+    color: var(--text-main);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-left: 8px;
+    border: 1px solid var(--border);
+}
+
+.header-btn:hover { background: #333; border-color: var(--accent); }
+
+/* Main */
+.launcher-main { display: flex; height: calc(100vh - 58px); }
+
+.projects-section { flex: 3; padding: 32px; overflow-y: auto; }
+
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+
+.btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+/* Проекты */
+.project-item {
+    background: var(--bg-side);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-item:hover { border-color: rgba(0, 162, 255, 0.4); background: #222; }
+
+.project-name { font-weight: 600; font-size: 15px; color: #fff; }
+.project-path, .project-date { font-size: 12px; color: var(--text-dim); }
+
+.project-action-btn {
+    background: var(--bg-card);
+    color: var(--text-main);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.project-action-btn:hover { background: var(--accent); color: #000; }
+
+/* Шаблоны */
+.templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.template-card {
+    background: var(--bg-side);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+.template-card:hover { border-color: var(--accent); background: #222; }
+
+/* Новости (Боковая панель) */
+.news-section {
+    flex: 1.2;
+    background: #111;
+    border-left: 1px solid var(--border);
+    padding: 32px;
+    overflow-y: auto;
+}
+
+.news-item {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.news-date { color: var(--accent); font-size: 11px; text-transform: uppercase; font-weight: 700; }
+.news-title { color: #fff; font-weight: 600; margin: 4px 0; font-size: 14px; }
+.news-content { color: var(--text-dim); font-size: 13px; line-height: 1.4; }
+
+.news-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+/* Ссылки */
+.quick-link {
+    display: block;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--accent);
+}
+
+.quick-link:hover { text-decoration: underline; color: #fff; }
+
+.version-info {
+    margin-top: 40px;
+    font-size: 11px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+}
